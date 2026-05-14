@@ -1,0 +1,1 @@
+schtasks /create /tn "ImpermanenceDaily" /tr "%~dp0anatta.exe" /sc daily /st 03:00 /f
