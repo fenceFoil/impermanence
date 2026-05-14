@@ -1,0 +1,15 @@
+Windows Registry Editor Version 5.00
+
+; --- Context menu for Files ---
+[HKEY_CLASSES_ROOT\*\shell\ImpermanenceDuhkha]
+@="Delete Next Month"
+
+[HKEY_CLASSES_ROOT\*\shell\ImpermanenceDuhkha\command]
+@="\"A:\\users\\bj\\projects\\impermanence\\duhkha.exe\" \"%1\""
+
+; --- Context menu for Folders ---
+[HKEY_CLASSES_ROOT\Directory\shell\ImpermanenceDuhkha]
+@="Delete Next Month"
+
+[HKEY_CLASSES_ROOT\Directory\shell\ImpermanenceDuhkha\command]
+@="\"A:\\users\\bj\\projects\\impermanence\\duhkha.exe\" \"%1\""

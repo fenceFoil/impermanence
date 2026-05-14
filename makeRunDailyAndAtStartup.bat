@@ -1,0 +1,2 @@
+schtasks /create /tn "ImpermanenceDaily" /tr "A:\users\bj\projects\impermanence\anatta.exe" /sc daily /st 03:00
+schtasks /create /tn "ImpermanenceStartup" /tr "A:\users\bj\projects\impermanence\anatta.exe" /sc onstart /ru System

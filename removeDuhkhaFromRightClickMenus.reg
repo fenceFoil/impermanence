@@ -1,0 +1,7 @@
+Windows Registry Editor Version 5.00
+
+; --- Remove context menu from Files ---
+[-HKEY_CLASSES_ROOT\*\shell\ImpermanenceDuhkha]
+
+; --- Remove context menu from Folders ---
+[-HKEY_CLASSES_ROOT\Directory\shell\ImpermanenceDuhkha]
