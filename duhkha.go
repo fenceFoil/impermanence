@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"syscall"
 	"time"
+	"unsafe"
 )
 
 const (
@@ -109,6 +111,39 @@ func absPath(path string) string {
 	return abs
 }
 
+const (
+	MB_OK              = 0x00000000
+	MB_ICONINFORMATION = 0x00000040
+	MB_SETFOREGROUND   = 0x00010000
+	MB_TOPMOST         = 0x00040000
+	IDTIMEOUT          = 32000
+)
+
+var user32 = syscall.MustLoadDLL("user32.dll")
+var messageBoxW = user32.MustFindProc("MessageBoxW")
+
+func messageBox(hwnd uintptr, text, caption *uint16, flags uint32) int {
+	ret, _, _ := messageBoxW.Call(hwnd, uintptr(unsafe.Pointer(text)), uintptr(unsafe.Pointer(caption)), uintptr(flags))
+	return int(ret)
+}
+
+func showConfirmDialog(path string) int {
+	text, _ := syscall.UTF16PtrFromString("This item will be deleted in 30 days:\n\n" + path)
+	caption, _ := syscall.UTF16PtrFromString("Impermanence")
+
+	done := make(chan int)
+	go func() {
+		done <- messageBox(0, text, caption, MB_OK|MB_ICONINFORMATION|MB_SETFOREGROUND|MB_TOPMOST)
+	}()
+
+	select {
+	case result := <-done:
+		return result
+	case <-time.After(3 * time.Second):
+		return IDTIMEOUT
+	}
+}
+
 func main() {
 	changeToExeDir()
 
@@ -118,6 +153,12 @@ func main() {
 	}
 
 	path := absPath(os.Args[1])
+
+	result := showConfirmDialog(path)
+	if result == 0 || result == IDTIMEOUT {
+		logActivity("DUHKHA", "dialog timeout/cancel for: "+path)
+		return
+	}
 
 	items, err := loadPendingItems()
 	if err != nil {
